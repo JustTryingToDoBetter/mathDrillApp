@@ -1,7 +1,6 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
-const db = require('../db/database'); // Assuming your database setup
+const db = require('../database/database'); // Corrected path to the database
 
 // Add a user
 router.post('/', (req, res) => {
