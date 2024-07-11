@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Drill App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Math Drill App</h1>
+    <div id="drill-selection">
+        <button onclick="startDrill('addition')">Addition Drill</button>
+        <button onclick="startDrill('multiplication')">Multiplication Drill</button>
+        <button onclick="startDrill('division')">Division Drill</button>
+    </div>
+    <div id="drill" class="hidden">
+        <p id="timer">Time: 5:00</p>
+        <p id="question-number">Question: 1/50</p>
+        <p id="question"></p>
+        <div id="answer-buttons">
+            <button onclick="submitAnswer(this)"></button>
+            <button onclick="submitAnswer(this)"></button>
+            <button onclick="submitAnswer(this)"></button>
+            <button onclick="submitAnswer(this)"></button>
+        </div>
+        <button onclick="skipQuestion()">Skip</button>
+        <button onclick="endDrill()">Done</button>
+        <div id="questions-list"></div>
+    </div>
+    <div id="results" class="hidden">
+        <p id="score"></p>
+        <button onclick="resetApp()">Go Again</button>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

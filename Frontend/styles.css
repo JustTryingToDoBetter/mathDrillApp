@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-image: url('background.jpeg');
+    background-size: cover;
+    background-position: center;
+    color: #ffffff; /* Assuming white text looks good on the dark background */
+}
+
+h1 {
+    color: #00ccff; /* Light blue color matching the image */
+}
+
+button {
+    background-color: #1e90ff; /* Dodger blue */
+    color: white;
+    padding: 15px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #00bfff; /* Deep sky blue */
+}
+
+#drill-selection, #drill, #results {
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#question {
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+#answer-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#answer-buttons button {
+    flex: 1 1 45%;
+    margin: 10px;
+    padding: 20px;
+    font-size: 18px;
+}
+
+.hidden {
+    display: none;
+}
+
+#timer {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff4500;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.5;
+    }
+}
+
+#score {
+    font-size: 24px;
+    color: #ffffff;
+}
+
+button:focus {
+    outline: none;
+}
+
+#questions-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#questions-list span {
+    margin: 5px;
+    padding: 10px;
+    width: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#questions-list span.answered {
+    background-color: #32cd32; /* Lime green */
+    color: white;
+}
+
+#questions-list span.unanswered {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+    color: #00ccff;
+    border-color: #1e90ff;
+}
