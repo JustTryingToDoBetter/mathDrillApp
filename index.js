@@ -1,49 +1,34 @@
-let timer;
-let timeLeft = 300;
-let currentQuestionIndex = 0;
-let questions = [];
-let correctAnswers = 0;
-let currentDrill = '';
-let correctAnswer = 0;
-
-function startDrill(drillType) {
-    currentDrill = drillType;
-    document.getElementById('drill-selection').classList.add('hidden');
-    document.getElementById('drill').classList.remove('hidden');
-    generateQuestions();
-    startTimer();
-    displayQuestion(currentQuestionIndex);
-    updateQuestionsList();
-}
-
-function startTimer() {
-    document.getElementById('timer').innerText = `Time: ${formatTime(timeLeft)}`;
-    timer = setInterval(() => {
-        timeLeft -= 1;
-        document.getElementById('timer').innerText = `Time: ${formatTime(timeLeft)}`;
-        if (timeLeft <= 0) {
-            endDrill();
-        }
-    }, 1000);
-}
-
-function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const secondsLeft = seconds % 60;
-    return `${minutes}:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`;
-}
-
 function generateQuestions() {
-    for (let i = 0; i < 50; i++) {
+    questions = [];
+    const halfQuestions = 25; // Since we need 50 questions, half will be addition and half subtraction
+
+    for (let i = 0; i < halfQuestions; i++) {
+        // Generate addition question
         let a, b, question, answerChoices = [], correctAnswer;
-        if (currentDrill === 'addition') {
-            do {
-                a = Math.floor(Math.random() * 20) + 1;
-                b = Math.floor(Math.random() * 20) + 1;
-                correctAnswer = a + b;
-            } while (correctAnswer > 20);
-            question = `${a} + ${b}`;
-        } else if (currentDrill === 'multiplication') {
+        do {
+            a = Math.floor(Math.random() * 20) + 1;
+            b = Math.floor(Math.random() * 20) + 1;
+            correctAnswer = a + b;
+        } while (correctAnswer > 20);
+        question = `${a} + ${b}`;
+        addQuestion(question, correctAnswer, answerChoices);
+
+        // Generate subtraction question
+        answerChoices = [];
+        do {
+            a = Math.floor(Math.random() * 20) + 1;
+            b = Math.floor(Math.random() * 20) + 1;
+            if (a < b) [a, b] = [b, a]; // Ensure a is always greater than or equal to b
+            correctAnswer = a - b;
+        } while (correctAnswer < 0);
+        question = `${a} - ${b}`;
+        addQuestion(question, correctAnswer, answerChoices);
+    }
+
+    // Fill remaining questions based on drill type
+    for (let i = 0; i < halfQuestions; i++) {
+        let a, b, question, answerChoices = [], correctAnswer;
+        if (currentDrill === 'multiplication') {
             a = Math.floor(Math.random() * 12) + 1;
             b = Math.floor(Math.random() * 12) + 1;
             correctAnswer = a * b;
@@ -58,32 +43,34 @@ function generateQuestions() {
             correctAnswer = a / b;
             question = `${a} / ${b}`;
         }
-
-        answerChoices.push(correctAnswer);
-        while (answerChoices.length < 4) {
-            let wrongAnswer;
-            if (currentDrill === 'addition') {
-                wrongAnswer = Math.floor(Math.random() * 20) + 1; // Ensure wrong answers are also within the limit
-                if (wrongAnswer > 20) continue; // Skip this iteration if the wrong answer exceeds 20
-            } else if (currentDrill === 'multiplication') {
-                wrongAnswer = Math.floor(Math.random() * 144);
-            } else if (currentDrill === 'division') {
-                wrongAnswer = Math.floor(Math.random() * 12) + 1;
-            }
-            if (wrongAnswer !== correctAnswer && !answerChoices.includes(wrongAnswer)) {
-                answerChoices.push(wrongAnswer);
-            }
-        }
-
-        shuffleArray(answerChoices);
-
-        questions.push({
-            question,
-            answerChoices,
-            correctAnswer,
-            answered: false
-        });
+        addQuestion(question, correctAnswer, answerChoices);
     }
+}
+
+function addQuestion(question, correctAnswer, answerChoices) {
+    answerChoices.push(correctAnswer);
+    while (answerChoices.length < 4) {
+        let wrongAnswer;
+        if (currentDrill === 'addition' || currentDrill === 'subtraction') {
+            wrongAnswer = Math.floor(Math.random() * 40);
+        } else if (currentDrill === 'multiplication') {
+            wrongAnswer = Math.floor(Math.random() * 144);
+        } else if (currentDrill === 'division') {
+            wrongAnswer = Math.floor(Math.random() * 12) + 1;
+        }
+        if (wrongAnswer !== correctAnswer && !answerChoices.includes(wrongAnswer)) {
+            answerChoices.push(wrongAnswer);
+        }
+    }
+
+    shuffleArray(answerChoices);
+
+    questions.push({
+        question,
+        answerChoices,
+        correctAnswer,
+        answered: false
+    });
 }
 
 function displayQuestion(index) {
