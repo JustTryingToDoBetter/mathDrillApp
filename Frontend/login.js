@@ -2,6 +2,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const messageElement = document.getElementById('login-message');
 
     const response = await fetch('/api/users/login', {
         method: 'POST',
@@ -9,13 +10,17 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         body: JSON.stringify({ username, password })
     });
 
+    const responseData = await response.json();
+
     if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token); // Store the token in local storage
-        alert('Login successful!');
-        window.location.href = 'index.html'; // Redirect to the home page
+        localStorage.setItem('token', responseData.token); // Store the token in local storage
+        messageElement.textContent = 'Login successful!';
+        messageElement.style.color = 'green';
+        setTimeout(() => {
+            window.location.href = 'index.html'; // Redirect to the home page
+        }, 2000); // Redirect to home page after 2 seconds
     } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
+        messageElement.textContent = `Error: ${responseData.error}`;
+        messageElement.style.color = 'red';
     }
 });

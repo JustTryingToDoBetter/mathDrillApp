@@ -2,6 +2,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const messageElement = document.getElementById('signup-message');
 
     const response = await fetch('/api/users/register', {
         method: 'POST',
@@ -9,11 +10,16 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
         body: JSON.stringify({ username, password })
     });
 
+    const responseData = await response.json();
+
     if (response.ok) {
-        alert('User registered successfully!');
-        window.location.href = 'login.html';
+        messageElement.textContent = 'User registered successfully!';
+        messageElement.style.color = 'green';
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000); // Redirect to login page after 2 seconds
     } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error}`);
+        messageElement.textContent = `Error: ${responseData.error}`;
+        messageElement.style.color = 'red';
     }
 });
