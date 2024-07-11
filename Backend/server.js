@@ -14,7 +14,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'Frontend')));
 
 // Use the users router
 app.use('/api/users', usersRouter);
@@ -26,7 +26,7 @@ app.get('/api/test', (req, res) => {
 
 // Serve the frontend
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'Frontend', 'index.html'));
 });
 
 // Error handling middleware
@@ -37,19 +37,4 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});
-
-// Example authentication middleware
-function authenticate(req, res, next) {
-    // Authentication logic here
-    if (req.headers.authorization === 'Bearer my-secret-token') {
-        next();
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
-    }
-}
-
-// Use the authentication middleware for a specific route
-app.use('/api/protected', authenticate, (req, res) => {
-    res.json({ message: 'This is a protected route' });
 });
