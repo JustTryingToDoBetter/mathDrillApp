@@ -19,6 +19,16 @@ app.use(express.static(path.join(__dirname, '../Frontend')));
 // Use the users router
 app.use('/api/users', usersRouter);
 
+// Serve the sign-up page
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Frontend', 'signup.html'));
+});
+
+// Serve the login page
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
+});
+
 // API endpoint to test the server
 app.get('/api/test', (req, res) => {
     res.json({ message: 'API is working' });
