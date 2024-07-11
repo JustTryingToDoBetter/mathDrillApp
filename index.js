@@ -1,6 +1,7 @@
 let timer;
 let timeLeft = 300;
-let questionCounter = 0;
+let currentQuestionIndex = 0;
+let questions = [];
 let correctAnswers = 0;
 let currentDrill = '';
 let correctAnswer = 0;
@@ -9,8 +10,10 @@ function startDrill(drillType) {
     currentDrill = drillType;
     document.getElementById('drill-selection').classList.add('hidden');
     document.getElementById('drill').classList.remove('hidden');
+    generateQuestions();
     startTimer();
-    generateQuestion();
+    displayQuestion(currentQuestionIndex);
+    updateQuestionsList();
 }
 
 function startTimer() {
@@ -30,80 +33,117 @@ function formatTime(seconds) {
     return `${minutes}:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`;
 }
 
-function generateQuestion() {
-    let a, b, question, answerChoices = [];
-    if (currentDrill === 'addition') {
-        a = Math.floor(Math.random() * 20) + 1;
-        b = Math.floor(Math.random() * 20) + 1;
-        correctAnswer = a + b;
-        question = `${a} + ${b}`;
-    } else if (currentDrill === 'multiplication') {
-        a = Math.floor(Math.random() * 12) + 1;
-        b = Math.floor(Math.random() * 12) + 1;
-        correctAnswer = a * b;
-        question = `${a} * ${b}`;
-    } else if (currentDrill === 'division') {
-        a = Math.floor(Math.random() * 12) + 1;
-        b = Math.floor(Math.random() * 12) + 1;
-        while (a % b !== 0) {
+function generateQuestions() {
+    for (let i = 0; i < 50; i++) {
+        let a, b, question, answerChoices = [], correctAnswer;
+        if (currentDrill === 'addition') {
+            a = Math.floor(Math.random() * 20) + 1;
+            b = Math.floor(Math.random() * 20) + 1;
+            correctAnswer = a + b;
+            question = `${a} + ${b}`;
+        } else if (currentDrill === 'multiplication') {
             a = Math.floor(Math.random() * 12) + 1;
             b = Math.floor(Math.random() * 12) + 1;
-        }
-        correctAnswer = a / b;
-        question = `${a} / ${b}`;
-    }
-
-    document.getElementById('question').innerText = question;
-
-    answerChoices.push(correctAnswer);
-    while (answerChoices.length < 4) {
-        let wrongAnswer;
-        if (currentDrill === 'addition') {
-            wrongAnswer = Math.floor(Math.random() * 40);
-        } else if (currentDrill === 'multiplication') {
-            wrongAnswer = Math.floor(Math.random() * 144);
+            correctAnswer = a * b;
+            question = `${a} * ${b}`;
         } else if (currentDrill === 'division') {
-            wrongAnswer = Math.floor(Math.random() * 12) + 1;
+            a = Math.floor(Math.random() * 12) + 1;
+            b = Math.floor(Math.random() * 12) + 1;
+            while (a % b !== 0) {
+                a = Math.floor(Math.random() * 12) + 1;
+                b = Math.floor(Math.random() * 12) + 1;
+            }
+            correctAnswer = a / b;
+            question = `${a} / ${b}`;
         }
-        if (wrongAnswer !== correctAnswer && !answerChoices.includes(wrongAnswer)) {
-            answerChoices.push(wrongAnswer);
+
+        answerChoices.push(correctAnswer);
+        while (answerChoices.length < 4) {
+            let wrongAnswer;
+            if (currentDrill === 'addition') {
+                wrongAnswer = Math.floor(Math.random() * 40);
+            } else if (currentDrill === 'multiplication') {
+                wrongAnswer = Math.floor(Math.random() * 144);
+            } else if (currentDrill === 'division') {
+                wrongAnswer = Math.floor(Math.random() * 12) + 1;
+            }
+            if (wrongAnswer !== correctAnswer && !answerChoices.includes(wrongAnswer)) {
+                answerChoices.push(wrongAnswer);
+            }
         }
+
+        shuffleArray(answerChoices);
+
+        questions.push({
+            question,
+            answerChoices,
+            correctAnswer,
+            answered: false
+        });
     }
+}
 
-    shuffleArray(answerChoices);
-
+function displayQuestion(index) {
+    const questionData = questions[index];
+    document.getElementById('question').innerText = questionData.question;
     const buttons = document.querySelectorAll('#answer-buttons button');
     for (let i = 0; i < buttons.length; i++) {
-        buttons[i].innerText = answerChoices[i];
+        buttons[i].innerText = questionData.answerChoices[i];
     }
+    document.getElementById('question-number').innerText = `Question: ${index + 1}/50`;
 }
 
 function submitAnswer(button) {
     const answer = parseInt(button.innerText);
-
-    if (answer === correctAnswer) {
+    if (answer === questions[currentQuestionIndex].correctAnswer) {
         correctAnswers += 1;
     }
-    questionCounter += 1;
-
-    if (questionCounter >= 50) {
-        endDrill();
-    } else {
-        generateQuestion();
-    }
+    questions[currentQuestionIndex].answered = true;
+    updateQuestionsList();
+    nextQuestion();
 }
-// stops drill after 
+
+function skipQuestion() {
+    nextQuestion();
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < 49) {
+        currentQuestionIndex += 1;
+    } else {
+        currentQuestionIndex = 0;
+    }
+    displayQuestion(currentQuestionIndex);
+}
+
+function jumpToQuestion(index) {
+    currentQuestionIndex = index;
+    displayQuestion(currentQuestionIndex);
+}
+
+function updateQuestionsList() {
+    const list = document.getElementById('questions-list');
+    list.innerHTML = '';
+    questions.forEach((q, index) => {
+        const questionElement = document.createElement('span');
+        questionElement.innerText = index + 1;
+        questionElement.className = q.answered ? 'answered' : 'unanswered';
+        questionElement.onclick = () => jumpToQuestion(index);
+        list.appendChild(questionElement);
+    });
+}
+
 function endDrill() {
     clearInterval(timer);
     document.getElementById('drill').classList.add('hidden');
     document.getElementById('results').classList.remove('hidden');
-    document.getElementById('score').innerText = `You answered ${correctAnswers} out of ${questionCounter} questions correctly!`;
+    document.getElementById('score').innerText = `You answered ${correctAnswers} out of 50 questions correctly!`;
 }
 
-// restarts app
 function resetApp() {
     timeLeft = 300;
-    questionCounter = 0;
+    currentQuestionIndex = 0;
+    questions = [];
     correctAnswers = 0;
     currentDrill = '';
     document.getElementById('drill-selection').classList.remove('hidden');
@@ -111,7 +151,6 @@ function resetApp() {
     document.getElementById('results').classList.add('hidden');
 }
 
-// moves the multi choice questions around
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

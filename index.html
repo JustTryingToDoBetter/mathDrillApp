@@ -15,6 +15,7 @@
     </div>
     <div id="drill" class="hidden">
         <p id="timer">Time: 5:00</p>
+        <p id="question-number">Question: 1/50</p>
         <p id="question"></p>
         <div id="answer-buttons">
             <button onclick="submitAnswer(this)"></button>
@@ -22,6 +23,8 @@
             <button onclick="submitAnswer(this)"></button>
             <button onclick="submitAnswer(this)"></button>
         </div>
+        <button onclick="skipQuestion()">Skip</button>
+        <div id="questions-list"></div>
     </div>
     <div id="results" class="hidden">
         <p id="score"></p>

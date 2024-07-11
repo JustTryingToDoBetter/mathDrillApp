@@ -72,3 +72,31 @@ button:hover {
 button:focus {
     outline: none;
 }
+
+#questions-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#questions-list span {
+    margin: 5px;
+    padding: 10px;
+    width: 30px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#questions-list span.answered {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#questions-list span.unanswered {
+    background-color: #f0f8ff;
+    color: #333;
+    border-color: #4CAF50;
+}
