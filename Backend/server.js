@@ -1,8 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const db = require('./database/database'); // Corrected path to the database
-const usersRouter = require('./routes/users'); // Corrected path to the users router
+const db = require('./database/database');
+const usersRouter = require('./routes/users');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
