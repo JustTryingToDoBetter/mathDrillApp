@@ -37,9 +37,11 @@ function generateQuestions() {
     for (let i = 0; i < 50; i++) {
         let a, b, question, answerChoices = [], correctAnswer;
         if (currentDrill === 'addition') {
-            a = Math.floor(Math.random() * 20) + 1;
-            b = Math.floor(Math.random() * 20) + 1;
-            correctAnswer = a + b;
+            do {
+                a = Math.floor(Math.random() * 20) + 1;
+                b = Math.floor(Math.random() * 20) + 1;
+                correctAnswer = a + b;
+            } while (correctAnswer > 20);
             question = `${a} + ${b}`;
         } else if (currentDrill === 'multiplication') {
             a = Math.floor(Math.random() * 12) + 1;
@@ -61,7 +63,8 @@ function generateQuestions() {
         while (answerChoices.length < 4) {
             let wrongAnswer;
             if (currentDrill === 'addition') {
-                wrongAnswer = Math.floor(Math.random() * 40);
+                wrongAnswer = Math.floor(Math.random() * 20) + 1; // Ensure wrong answers are also within the limit
+                if (wrongAnswer > 20) continue; // Skip this iteration if the wrong answer exceeds 20
             } else if (currentDrill === 'multiplication') {
                 wrongAnswer = Math.floor(Math.random() * 144);
             } else if (currentDrill === 'division') {
