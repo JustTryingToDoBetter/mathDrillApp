@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
+require('dotenv').config(); // Load environment variables
 const db = require('./database/database');
 const usersRouter = require('./routes/users');
 
@@ -29,14 +30,14 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../Frontend', 'login.html'));
 });
 
-// API endpoint to test the server
-app.get('/api/test', (req, res) => {
-    res.json({ message: 'API is working' });
+// Serve the main page (home page)
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
 // Serve the frontend
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
+    res.redirect('/signup');
 });
 
 // Error handling middleware
