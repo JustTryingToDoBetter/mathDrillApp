@@ -9,8 +9,13 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.log('Connected to SQLite database');
         db.run(`CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
+            username TEXT NOT NULL UNIQUE
+        )`);
+        
+        db.run(`CREATE TABLE IF NOT EXISTS passwords (
+            user_id INTEGER PRIMARY KEY,
+            password TEXT NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id)
         )`);
         
         db.run(`CREATE TABLE IF NOT EXISTS scores (

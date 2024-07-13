@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-require('dotenv').config(); // Load environment variables
 const db = require('./database/database');
 const usersRouter = require('./routes/users');
 
@@ -35,7 +35,7 @@ app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, '../Frontend', 'index.html'));
 });
 
-// Serve the frontend
+// Redirect to signup page if no other routes match
 app.get('*', (req, res) => {
     res.redirect('/signup');
 });
