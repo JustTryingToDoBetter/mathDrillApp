@@ -14,6 +14,24 @@
         <button onclick="startDrill('multiplication')">Multiplication Drill</button>
         <button onclick="startDrill('division')">Division Drill</button>
     </div>
-    <script src="index.js"></script>
+    <div id="drill" class="hidden">
+        <p id="timer"></p>
+        <p id="question-number"></p>
+        <p id="question"></p>
+        <div id="answer-buttons">
+            <button onclick="submitAnswer(this)">Answer 1</button>
+            <button onclick="submitAnswer(this)">Answer 2</button>
+            <button onclick="submitAnswer(this)">Answer 3</button>
+            <button onclick="submitAnswer(this)">Answer 4</button>
+        </div>
+        <button onclick="skipQuestion()">Skip</button>
+        <div id="questions-list"></div>
+        <button onclick="endDrill()">Done</button>
+    </div>
+    <div id="results" class="hidden">
+        <p id="score"></p>
+        <button onclick="resetApp()">Restart</button>
+    </div>
+    <script src="index.js"></script> <!-- Ensure this is correctly linked and placed here -->
 </body>
 </html>

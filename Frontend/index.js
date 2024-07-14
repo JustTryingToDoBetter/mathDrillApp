@@ -1,3 +1,34 @@
+console.log("index.js is loaded");
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log("DOM fully loaded and parsed");
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/login.html'; // Redirect to login if no token
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/users/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById('greeting').innerText = `Welcome, ${user.username}!`;
+        } else {
+            localStorage.removeItem('token'); // Remove invalid token
+            window.location.href = '/login.html'; // Redirect to login if token is invalid
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        localStorage.removeItem('token'); // Remove token in case of error
+        window.location.href = '/login.html'; // Redirect to login
+    }
+});
+
 let timer;
 let timeLeft = 300;
 let currentQuestionIndex = 0;
@@ -7,6 +38,7 @@ let currentDrill = '';
 let correctAnswer = 0;
 
 function startDrill(drillType) {
+    console.log(`Starting ${drillType} drill`);
     currentDrill = drillType;
     document.getElementById('drill-selection').classList.add('hidden');
     document.getElementById('drill').classList.remove('hidden');
@@ -34,6 +66,7 @@ function formatTime(seconds) {
 }
 
 function generateQuestions() {
+    console.log(`Generating question for ${currentDrill} drill`);
     questions = [];
     const totalQuestions = 50; 
 
