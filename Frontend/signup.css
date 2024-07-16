@@ -1,49 +1,55 @@
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 20px;
-    background-image: url('background.jpg');
-    background-size: cover;
-    background-position: center;
-    color: #ffffff;
+    background-color: #f2f2f2;
+    color: #333;
 }
 
 h1 {
-    color: #00ccff;
+    color: #1e90ff;
 }
 
+/* Form styles */
 form {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: inline-block;
-    margin-top: 20px;
+    margin: 20px auto;
+    width: 300px;
+    text-align: left;
 }
 
 label {
     display: block;
-    margin: 10px 0 5px;
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
 input[type="text"],
 input[type="password"] {
+    width: calc(100% - 20px);
     padding: 10px;
-    margin: 5px 0 10px;
-    width: calc(100% - 22px);
-    border: none;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
 button {
     background-color: #1e90ff;
     color: white;
-    padding: 10px 20px;
-    margin: 10px;
+    padding: 15px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
 }
 
 button:hover {
@@ -55,5 +61,10 @@ p {
 }
 
 a {
-    color: #00ccff;
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }

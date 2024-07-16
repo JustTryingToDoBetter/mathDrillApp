@@ -9,16 +9,60 @@
 <body>
     <h1>Sign Up</h1>
     <form id="signup-form">
+        <!-- Form element with an ID for sign-up, used for capturing user inputs -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
-        <br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <br>
         <button type="submit">Sign Up</button>
+        <!-- Submit button to send the form data -->
     </form>
-    <p id="signup-message"></p>
-    <p>Already have an account? <a href="login.html">Login</a></p>
-    <script src="signup.js"></script>
+    <p>Already a member? <a href="/login">Login here</a></p>
+    <script>
+        // JavaScript to handle the form submission asynchronously
+        document.getElementById('signup-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Prevents the default form submission behavior
+
+            const username = document.getElementById('username').value;
+            // Retrieves the value from the username input field
+
+            const password = document.getElementById('password').value;
+            // Retrieves the value from the password input field
+
+            try {
+                // Tries to execute the code inside the block
+                const response = await fetch('/api/users/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // Sends a POST request to the /api/users/signup endpoint with JSON headers
+                    body: JSON.stringify({ username, password })
+                    // Converts the username and password to a JSON string and includes it in the request body
+                });
+
+                const data = await response.json();
+                // Parses the JSON response from the server
+
+                if (response.ok) {
+                    // Checks if the response status is OK (status code 200-299)
+                    alert(data.message);
+                    // Displays an alert with the message from the server
+                    window.location.href = '/login';
+                    // Redirects the user to the login page
+                } else {
+                    // If the response status is not OK
+                    alert(data.message);
+                    // Displays an alert with the error message from the server
+                }
+            } catch (error) {
+                // Catches any errors that occur during the fetch or parsing process
+                console.error('Error during sign-up:', error);
+                // Logs the error to the console
+            }
+        });
+    </script>
+    <!-- Script to handle asynchronous form submission -->
 </body>
 </html>

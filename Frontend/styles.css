@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 20px;
-    background-image: url('background.jpeg');
+    background-image: url('background.jpg');
     background-size: cover;
     background-position: center;
     color: #ffffff;
@@ -12,7 +12,7 @@ h1 {
     color: #00ccff;
 }
 
-button {
+nav button, #drill button, #results button, #history button {
     background-color: #1e90ff;
     color: white;
     padding: 15px 20px;
@@ -28,14 +28,14 @@ button:hover {
     background-color: #00bfff;
 }
 
-#drill-selection, #drill, #results {
+#drill-selection, #drill, #results, #history {
     margin-top: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     padding: 20px;
     border-radius: 10px;
 }
 
-#question, #question-number, #timer {
+#question, #question-number, #timer, #score {
     font-size: 24px;
     margin: 20px 0;
 }
@@ -70,14 +70,6 @@ button:hover {
     }
 }
 
-#score {
-    font-size: 24px;
-    color: #ffffff;
-}
-
-button:focus {
-    outline: none;
-}
 
 #questions-list {
     display: flex;
@@ -105,4 +97,17 @@ button:focus {
     background-color: rgba(0, 0, 0, 0.5);
     color: #00ccff;
     border-color: #1e90ff;
+}
+
+#history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#history-list li {
+    margin: 10px 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    color: #00ccff;
 }

@@ -9,16 +9,62 @@
 <body>
     <h1>Login</h1>
     <form id="login-form">
+        <!-- Form element with an ID for login, used for capturing user inputs -->
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
-        <br>
+
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
-        <br>
+
         <button type="submit">Login</button>
+        <!-- Submit button to send the form data -->
     </form>
-    <p id="login-message"></p>
-    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-    <script src="login.js"></script>
+    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    <script>
+        // JavaScript to handle the form submission asynchronously
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Prevents the default form submission behavior
+
+            const username = document.getElementById('username').value;
+            // Retrieves the value from the username input field
+
+            const password = document.getElementById('password').value;
+            // Retrieves the value from the password input field
+
+            try {
+                // Tries to execute the code inside the block
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    // Sends a POST request to the /api/users/login endpoint with JSON headers
+                    body: JSON.stringify({ username, password })
+                    // Converts the username and password to a JSON string and includes it in the request body
+                });
+
+                const data = await response.json();
+                // Parses the JSON response from the server
+
+                if (response.ok) {
+                    // Checks if the response status is OK (status code 200-299)
+                    localStorage.setItem('token', data.token);
+                    // Stores the received token in the local storage
+                    window.location.href = '/home';
+                    // Redirects the user to the home page
+                } else {
+                    // If the response status is not OK
+                    alert(data.message);
+                    // Displays an alert with the error message from the server
+                }
+            } catch (error) {
+                // Catches any errors that occur during the fetch or parsing process
+                console.error('Error during login:', error);
+                // Logs the error to the console
+            }
+        });
+    </script>
+    <!-- Script to handle asynchronous form submission -->
 </body>
 </html>

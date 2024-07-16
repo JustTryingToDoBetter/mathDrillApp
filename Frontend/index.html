@@ -9,11 +9,13 @@
 <body>
     <h1>Math Drill App</h1>
     <p id="greeting"></p>
-    <div id="drill-selection">
+    <nav>
         <button onclick="startDrill('addition')">Addition Drill</button>
         <button onclick="startDrill('multiplication')">Multiplication Drill</button>
         <button onclick="startDrill('division')">Division Drill</button>
-    </div>
+        <button onclick="viewHistory()">View Drill History</button>
+        <button onclick="logout()">Logout</button>
+    </nav>
     <div id="drill" class="hidden">
         <p id="timer"></p>
         <p id="question-number"></p>
@@ -32,6 +34,11 @@
         <p id="score"></p>
         <button onclick="resetApp()">Restart</button>
     </div>
-    <script src="index.js"></script> <!-- Ensure this is correctly linked and placed here -->
+    <div id="history" class="hidden">
+        <h2>Drill History</h2>
+        <ul id="history-list"></ul>
+        <button onclick="closeHistory()">Close</button>
+    </div>
+    <script src="index.js"></script> 
 </body>
 </html>

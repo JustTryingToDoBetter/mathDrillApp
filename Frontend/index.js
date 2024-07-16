@@ -1,33 +1,4 @@
-console.log("index.js is loaded");
 
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log("DOM fully loaded and parsed");
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '/login.html'; // Redirect to login if no token
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/users/me', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (response.ok) {
-            const user = await response.json();
-            document.getElementById('greeting').innerText = `Welcome, ${user.username}!`;
-        } else {
-            localStorage.removeItem('token'); // Remove invalid token
-            window.location.href = '/login.html'; // Redirect to login if token is invalid
-        }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        localStorage.removeItem('token'); // Remove token in case of error
-        window.location.href = '/login.html'; // Redirect to login
-    }
-});
 
 let timer;
 let timeLeft = 300;
@@ -35,7 +6,16 @@ let currentQuestionIndex = 0;
 let questions = [];
 let correctAnswers = 0;
 let currentDrill = '';
-let correctAnswer = 0;
+let drillHistory = [];
+
+function loadDrillHistory() {
+    console.log("Loading drill history");
+    const savedHistory = localStorage.getItem('drillHistory');
+    if (savedHistory) {
+        drillHistory = JSON.parse(savedHistory);
+        console.log("Drill history loaded:", drillHistory);
+    }
+}
 
 function startDrill(drillType) {
     console.log(`Starting ${drillType} drill`);
@@ -49,6 +29,7 @@ function startDrill(drillType) {
 }
 
 function startTimer() {
+    console.log("Starting timer");
     document.getElementById('timer').innerText = `Time: ${formatTime(timeLeft)}`;
     timer = setInterval(() => {
         timeLeft -= 1;
@@ -66,9 +47,9 @@ function formatTime(seconds) {
 }
 
 function generateQuestions() {
-    console.log(`Generating question for ${currentDrill} drill`);
+    console.log("Generating questions");
     questions = [];
-    const totalQuestions = 50; 
+    const totalQuestions = 50;
 
     for (let i = 0; i < totalQuestions; i++) {
         let a, b, question, answerChoices = [], correctAnswer;
@@ -178,12 +159,44 @@ function updateQuestionsList() {
 
 function endDrill() {
     clearInterval(timer);
+    saveDrillHistory();
     document.getElementById('drill').classList.add('hidden');
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('score').innerText = `You answered ${correctAnswers} out of 50 questions correctly!`;
 }
 
+function saveDrillHistory() {
+    console.log("Saving drill history");
+    const drillRecord = {
+        drillType: currentDrill,
+        correctAnswers,
+        totalQuestions: questions.length,
+        date: new Date().toLocaleString()
+    };
+    drillHistory.push(drillRecord);
+    localStorage.setItem('drillHistory', JSON.stringify(drillHistory));
+}
+
+function viewHistory() {
+    console.log("Viewing drill history");
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = '';
+    drillHistory.forEach((record, index) => {
+        const listItem = document.createElement('li');
+        listItem.innerText = `${record.date} - ${record.drillType}: ${record.correctAnswers}/${record.totalQuestions}`;
+        historyList.appendChild(listItem);
+    });
+    document.getElementById('drill-selection').classList.add('hidden');
+    document.getElementById('history').classList.remove('hidden');
+}
+
+function closeHistory() {
+    document.getElementById('history').classList.add('hidden');
+    document.getElementById('drill-selection').classList.remove('hidden');
+}
+
 function resetApp() {
+    console.log("Resetting app");
     timeLeft = 300;
     currentQuestionIndex = 0;
     questions = [];
@@ -192,6 +205,12 @@ function resetApp() {
     document.getElementById('drill-selection').classList.remove('hidden');
     document.getElementById('drill').classList.add('hidden');
     document.getElementById('results').classList.add('hidden');
+}
+
+function logout() {
+    console.log("Logging out");
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
 }
 
 function shuffleArray(array) {
