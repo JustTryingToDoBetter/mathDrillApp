@@ -4,28 +4,29 @@ const path = require('path');
 const dbPath = path.resolve(__dirname, 'math_drill_app.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
-        console.error('Error opening database', err);
+        console.error('Error opening database:', err.message);
     } else {
-        console.log('Connected to SQLite database');
-        db.run(`CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE
-        )`);
-        
-        db.run(`CREATE TABLE IF NOT EXISTS passwords (
-            user_id INTEGER PRIMARY KEY,
-            password TEXT NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )`);
-        
-        db.run(`CREATE TABLE IF NOT EXISTS scores (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            score INTEGER,
-            drill_type TEXT,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        )`);
+        console.log('Connected to the SQLite database.');
+        db.serialize(() => {
+            db.run(`DROP TABLE IF EXISTS users`, (err) => {
+                if (err) {
+                    console.error('Error dropping users table:', err.message);
+                } else {
+                    console.log('Users table dropped.');
+                    db.run(`CREATE TABLE users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE,
+                        password TEXT
+                    )`, (err) => {
+                        if (err) {
+                            console.error('Error creating users table:', err.message);
+                        } else {
+                            console.log('Users table created.');
+                        }
+                    });
+                }
+            });
+        });
     }
 });
 

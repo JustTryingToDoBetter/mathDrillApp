@@ -8,13 +8,8 @@ const usersRouter = require('./routes/users');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Use morgan for logging
 app.use(morgan('dev'));
-
-// Middleware to parse JSON request bodies
 app.use(express.json());
-
-// Serve static files from the 'Frontend' directory
 app.use(express.static(path.join(__dirname, '../Frontend')));
 
 // Use the users router
