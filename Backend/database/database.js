@@ -8,24 +8,22 @@ const db = new sqlite3.Database(dbPath, (err) => {
     } else {
         console.log('Connected to the SQLite database.');
         db.serialize(() => {
-            db.run(`DROP TABLE IF EXISTS users`, (err) => {
-                if (err) {
-                    console.error('Error dropping users table:', err.message);
-                } else {
-                    console.log('Users table dropped.');
-                    db.run(`CREATE TABLE users (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        username TEXT UNIQUE,
-                        password TEXT
-                    )`, (err) => {
-                        if (err) {
-                            console.error('Error creating users table:', err.message);
-                        } else {
-                            console.log('Users table created.');
-                        }
-                    });
-                }
-            });
+            // Create users table if it doesn't exist
+            db.run(`CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                password TEXT
+            )`);
+
+            // Create scores table if it doesn't exist
+            db.run(`CREATE TABLE IF NOT EXISTS scores (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                drill_type TEXT,
+                score INTEGER,
+                date TEXT,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+            )`);
         });
     }
 });
