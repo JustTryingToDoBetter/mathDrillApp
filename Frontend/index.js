@@ -1,24 +1,11 @@
-
-
 let timer;
-let timeLeft = 300;
+let timeLeft = 300; // 5 minutes
 let currentQuestionIndex = 0;
 let questions = [];
 let correctAnswers = 0;
 let currentDrill = '';
-let drillHistory = [];
-
-function loadDrillHistory() {
-    console.log("Loading drill history");
-    const savedHistory = localStorage.getItem('drillHistory');
-    if (savedHistory) {
-        drillHistory = JSON.parse(savedHistory);
-        console.log("Drill history loaded:", drillHistory);
-    }
-}
 
 function startDrill(drillType) {
-    console.log(`Starting ${drillType} drill`);
     currentDrill = drillType;
     document.getElementById('drill-selection').classList.add('hidden');
     document.getElementById('drill').classList.remove('hidden');
@@ -29,7 +16,6 @@ function startDrill(drillType) {
 }
 
 function startTimer() {
-    console.log("Starting timer");
     document.getElementById('timer').innerText = `Time: ${formatTime(timeLeft)}`;
     timer = setInterval(() => {
         timeLeft -= 1;
@@ -47,7 +33,6 @@ function formatTime(seconds) {
 }
 
 function generateQuestions() {
-    console.log("Generating questions");
     questions = [];
     const totalQuestions = 50;
 
@@ -157,60 +142,65 @@ function updateQuestionsList() {
     });
 }
 
-function endDrill() {
+async function saveScore(drillType, score) {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found. User must be logged in.');
+        }
+
+        const response = await fetch('/api/users/save-score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ drillType, score })
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(`Error saving score: ${errorMessage}`);
+        }
+
+        const data = await response.json();
+        console.log('Score saved successfully:', data.message);
+        alert('Score saved successfully!');
+    } catch (error) {
+        console.error('Error during score saving:', error);
+        alert(`Error saving score: ${error.message}`);
+    }
+}
+
+async function endDrill() {
     clearInterval(timer);
-    saveDrillHistory();
     document.getElementById('drill').classList.add('hidden');
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('score').innerText = `You answered ${correctAnswers} out of 50 questions correctly!`;
-}
 
-function saveDrillHistory() {
-    console.log("Saving drill history");
-    const drillRecord = {
-        drillType: currentDrill,
-        correctAnswers,
-        totalQuestions: questions.length,
-        date: new Date().toLocaleString()
-    };
-    drillHistory.push(drillRecord);
-    localStorage.setItem('drillHistory', JSON.stringify(drillHistory));
-}
-
-function viewHistory() {
-    console.log("Viewing drill history");
-    const historyList = document.getElementById('history-list');
-    historyList.innerHTML = '';
-    drillHistory.forEach((record, index) => {
-        const listItem = document.createElement('li');
-        listItem.innerText = `${record.date} - ${record.drillType}: ${record.correctAnswers}/${record.totalQuestions}`;
-        historyList.appendChild(listItem);
-    });
-    document.getElementById('drill-selection').classList.add('hidden');
-    document.getElementById('history').classList.remove('hidden');
-}
-
-function closeHistory() {
-    document.getElementById('history').classList.add('hidden');
-    document.getElementById('drill-selection').classList.remove('hidden');
+    // Save the score
+    await saveScore(currentDrill, correctAnswers);
 }
 
 function resetApp() {
-    console.log("Resetting app");
     timeLeft = 300;
     currentQuestionIndex = 0;
     questions = [];
     correctAnswers = 0;
     currentDrill = '';
-    document.getElementById('drill-selection').classList.remove('hidden');
-    document.getElementById('drill').classList.add('hidden');
-    document.getElementById('results').classList.add('hidden');
-}
+    const drillSelection = document.getElementById('drill-selection');
+    const drill = document.getElementById('drill');
+    const results = document.getElementById('results');
 
-function logout() {
-    console.log("Logging out");
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
+    if (drillSelection) {
+        drillSelection.classList.remove('hidden');
+    }
+    if (drill) {
+        drill.classList.add('hidden');
+    }
+    if (results) {
+        results.classList.add('hidden');
+    }
 }
 
 function shuffleArray(array) {
@@ -219,3 +209,94 @@ function shuffleArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
+
+async function loadDrillHistory() {
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = ''; // Clear previous history
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found. User must be logged in.');
+        }
+
+        const response = await fetch('/api/users/history', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(`Error fetching history: ${errorMessage}`);
+        }
+
+        const historyData = await response.json();
+        historyData.forEach((item) => {
+            const li = document.createElement('li');
+            li.innerText = `${item.date}: ${item.drill_type} - ${item.score}/50`;
+            historyList.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Error fetching history:', error);
+        alert(`Error fetching history: ${error.message}`);
+    }
+}
+
+function viewHistory() {
+    const drillSelection = document.getElementById('drill-selection');
+    const history = document.getElementById('history');
+    
+    if (drillSelection) {
+        drillSelection.classList.add('hidden');
+    }
+    if (history) {
+        history.classList.remove('hidden');
+    }
+
+    loadDrillHistory();
+}
+
+function closeHistory() {
+    const history = document.getElementById('history');
+    const drillSelection = document.getElementById('drill-selection');
+    
+    if (history) {
+        history.classList.add('hidden');
+    }
+    if (drillSelection) {
+        drillSelection.classList.remove('hidden');
+    }
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/login.html'; // Redirect to login if no token
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/users/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById('greeting').innerText = `Welcome, ${user.username}!`;
+        } else {
+            localStorage.removeItem('token'); // Remove invalid token
+            window.location.href = '/login.html'; // Redirect to login if token is invalid
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        localStorage.removeItem('token'); // Remove token in case of error
+        window.location.href = '/login.html'; // Redirect to login
+    }
+});
