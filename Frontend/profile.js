@@ -16,9 +16,7 @@ async function fetchProfile() {
         if (response.ok) {
             const user = await response.json();
             document.getElementById('username').innerText = `Username: ${user.username}`;
-            document.getElementById('email').innerText = `Email: ${user.email}`;
             document.getElementById('bio').value = user.bio;
-            document.getElementById('profile-picture').src = user.profile_picture || 'default-profile.png';
             loadProgressChart(user.progress);
         } else {
             console.error('Failed to fetch profile');
@@ -34,9 +32,7 @@ function editProfile() {
 
 async function saveProfile() {
     const token = localStorage.getItem('token');
-    const email = document.getElementById('email').innerText.replace('Email: ', '');
     const bio = document.getElementById('bio').value;
-    const profile_picture = document.getElementById('profile-picture').src;
 
     try {
         const response = await fetch('/api/users/profile', {
