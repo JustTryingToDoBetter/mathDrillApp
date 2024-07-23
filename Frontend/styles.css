@@ -138,19 +138,6 @@ button:hover {
     border-color: #1e90ff;
 }
 
-#history-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-#history-list li {
-    margin: 10px 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-    border-radius: 5px;
-    color: #00ccff;
-}
-
 footer {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 10px 0;
@@ -199,3 +186,50 @@ footer {
     }
 }
 
+#profile img {
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+#profile p, #profile textarea {
+    margin-bottom: 10px;
+}
+
+#progress {
+    margin-top: 20px;
+}
+
+#progress-chart {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#history {
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+#history h2 {
+    margin-bottom: 20px;
+    color: #00ccff;
+}
+
+#history-chart {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#drill-type-select {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}

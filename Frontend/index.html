@@ -6,7 +6,6 @@
     <title>Math Drill App</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 <body>
     <header>
@@ -21,7 +20,6 @@
                 <button onclick="startDrill('division')">Division Drill</button>
                 <button onclick="viewHistory()">View Drill History</button>
                 <button onclick="logout()">Logout</button>
-                <button onclick="window.location.href='/profile.html'">Profile</button>
             </nav>
         </section>
         <section id="drill" class="hidden">
@@ -48,10 +46,16 @@
         </section>
         <section id="history" class="hidden">
             <h2>Drill History</h2>
-            <ul id="history-list"></ul>
+            <label for="drill-type-select">Select Drill Type:</label>
+            <select id="drill-type-select" onchange="filterHistory()">
+                <option value="all">All</option>
+                <option value="addition">Addition</option>
+                <option value="multiplication">Multiplication</option>
+                <option value="division">Division</option>
+            </select>
+            <canvas id="history-chart"></canvas>
             <button onclick="closeHistory()">Close</button>
         </section>
-    
     </main>
     <footer>
         <p>Math Drill App &copy; 2024</p>

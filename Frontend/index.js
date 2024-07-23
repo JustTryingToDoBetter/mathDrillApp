@@ -210,9 +210,9 @@ function shuffleArray(array) {
     }
 }
 
+let allHistoryData = [];
+
 async function loadDrillHistory() {
-    const historyList = document.getElementById('history-list');
-    historyList.innerHTML = ''; // Clear previous history
     try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -230,16 +230,65 @@ async function loadDrillHistory() {
             throw new Error(`Error fetching history: ${errorMessage}`);
         }
 
-        const historyData = await response.json();
-        historyData.forEach((item) => {
-            const li = document.createElement('li');
-            li.innerText = `${item.date}: ${item.drill_type} - ${item.score}/50`;
-            historyList.appendChild(li);
-        });
+        allHistoryData = await response.json();
+        renderHistoryChart(allHistoryData);
     } catch (error) {
         console.error('Error fetching history:', error);
         alert(`Error fetching history: ${error.message}`);
     }
+}
+
+function filterHistory() {
+    const selectedDrillType = document.getElementById('drill-type-select').value;
+    let filteredData = allHistoryData;
+
+    if (selectedDrillType !== 'all') {
+        filteredData = allHistoryData.filter(entry => entry.drill_type === selectedDrillType);
+    }
+
+    renderHistoryChart(filteredData);
+}
+
+function renderHistoryChart(historyData) {
+    const ctx = document.getElementById('history-chart').getContext('2d');
+    const labels = historyData.map(entry => new Date(entry.date).toLocaleDateString());
+    const scores = historyData.map(entry => entry.score);
+
+    if (window.historyChart) {
+        window.historyChart.destroy();
+    }
+
+    window.historyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Score',
+                data: scores,
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 50
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
 }
 
 function viewHistory() {
@@ -267,6 +316,8 @@ function closeHistory() {
         drillSelection.classList.remove('hidden');
     }
 }
+
+document.addEventListener('DOMContentLoaded', fetchProfile);
 
 function logout() {
     localStorage.removeItem('token');
