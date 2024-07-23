@@ -104,4 +104,17 @@ router.get('/history', validateToken, (req, res) => {
     });
 });
 
+router.get('/profile', validateToken, (req, res) => {
+    const query = 'SELECT * FROM users WHERE id = ?';
+    db.get(query, [req.user.id], (err, row) => {
+        if (err) {
+            console.error('Error fetching profile:', err.message);
+            return res.status(500).json({ message: 'Failed to fetch profile' });
+        } else {
+            res.json(row);
+        }
+    });
+});
+
+
 module.exports = router;
