@@ -57,10 +57,14 @@ nav button {
     flex: 1 1 45%;
 }
 
-button:hover {
-    background-color: #00bfff;
+button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+button:hover {
+    background-color: #00bfff;
+    transform: scale(1.05);
+}
 #drill-selection, #drill, #results, #history {
     margin-top: 20px;
     background-color: rgba(0, 0, 0, 0.5);
@@ -194,3 +198,4 @@ footer {
         font-size: 14px;
     }
 }
+
