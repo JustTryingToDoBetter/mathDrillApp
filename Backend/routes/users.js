@@ -117,7 +117,7 @@ router.get('/profile', validateToken, (req, res) => {
 });
 
 router.get('/profile', validateToken, (req, res) => {
-    const query = 'SELECT username, email, progress, profile_picture, bio FROM users WHERE id = ?';
+    const query = 'SELECT username, progress, bio FROM users WHERE id = ?';
     db.get(query, [req.user.id], (err, row) => {
         if (err) {
             console.error('Error fetching profile:', err.message);
@@ -130,7 +130,7 @@ router.get('/profile', validateToken, (req, res) => {
 
 router.post('/profile', validateToken, (req, res) => {
     const { email, profile_picture, bio } = req.body;
-    const query = 'UPDATE users SET email = ?, profile_picture = ?, bio = ? WHERE id = ?';
+    const query = 'UPDATE users SET bio = ? WHERE id = ?';
     db.run(query, [email, profile_picture, bio, req.user.id], function(err) {
         if (err) {
             console.error('Error updating profile:', err.message);
