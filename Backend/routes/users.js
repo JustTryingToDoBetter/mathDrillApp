@@ -116,5 +116,29 @@ router.get('/profile', validateToken, (req, res) => {
     });
 });
 
+router.get('/profile', validateToken, (req, res) => {
+    const query = 'SELECT username, email, progress, profile_picture, bio FROM users WHERE id = ?';
+    db.get(query, [req.user.id], (err, row) => {
+        if (err) {
+            console.error('Error fetching profile:', err.message);
+            return res.status(500).json({ message: 'Failed to fetch profile' });
+        } else {
+            res.json(row);
+        }
+    });
+});
+
+router.post('/profile', validateToken, (req, res) => {
+    const { email, profile_picture, bio } = req.body;
+    const query = 'UPDATE users SET email = ?, profile_picture = ?, bio = ? WHERE id = ?';
+    db.run(query, [email, profile_picture, bio, req.user.id], function(err) {
+        if (err) {
+            console.error('Error updating profile:', err.message);
+            return res.status(500).json({ message: 'Failed to update profile' });
+        } else {
+            res.status(200).json({ message: 'Profile updated successfully' });
+        }
+    });
+});
 
 module.exports = router;
